@@ -39,12 +39,10 @@ Antes de começar, você precisa ter instalado em sua máquina:
    git clone https://github.com/rs2chel/DevMovie.git
    cd DevMovie
 Instale as dependências:
-
-
-
-npm install
-# ou
-yarn install
+    ```bash
+         npm install
+         # ou
+         yarn install```
 
 Configure sua chave da API do TMDb:
 
@@ -59,13 +57,12 @@ env
 REACT_APP_TMDB_API_KEY=SUA_CHAVE_AQUI
 Inicie a aplicação:
 
-
-
+```bash
 npm start
 # ou
 yarn start
 Acesse no navegador:
-
+ ```
 
 http://localhost:3000
 📝 Observações
