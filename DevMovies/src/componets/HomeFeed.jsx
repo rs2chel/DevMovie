@@ -10,7 +10,11 @@ import {
 import ResultsGrid from "./ResultsGrid.jsx";
 import tmdb from "../api/tmdb";
 
-export default function HomeFeed({ favoritesSet, onToggleFavorite }) {
+export default function HomeFeed({
+  favoritesSet,
+  onToggleFavorite,
+  onCardClick,
+}) {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -22,6 +26,8 @@ export default function HomeFeed({ favoritesSet, onToggleFavorite }) {
   });
 
   useEffect(() => {
+    let ignore = false;
+
     const fetchTrending = async () => {
       setLoading(true);
       setErrorMsg("");
@@ -29,6 +35,7 @@ export default function HomeFeed({ favoritesSet, onToggleFavorite }) {
         const { data } = await tmdb.get("/trending/all/day", {
           params: { page },
         });
+
         const filtered = (data.results || [])
           .filter((it) => it.media_type === "movie" || it.media_type === "tv")
           .map((it) => ({
@@ -43,6 +50,8 @@ export default function HomeFeed({ favoritesSet, onToggleFavorite }) {
               : undefined,
           }));
 
+        if (ignore) return;
+
         setResults(filtered);
         setPagination({
           page: data.page || page,
@@ -50,17 +59,24 @@ export default function HomeFeed({ favoritesSet, onToggleFavorite }) {
           total_results: data.total_results ?? filtered.length ?? 0,
         });
       } catch (e) {
-        setErrorMsg(
-          e?.response?.data?.status_message ||
-            e.message ||
-            "Erro ao carregar feed"
-        );
+        if (!ignore)
+          setErrorMsg(
+            e?.response?.data?.status_message ||
+              e.message ||
+              "Erro ao carregar feed"
+          );
       } finally {
-        setLoading(false);
+        if (!ignore) setLoading(false);
       }
     };
+
     fetchTrending();
+    return () => {
+      ignore = true;
+    };
   }, [page]);
+
+  const totalPages = Math.min(pagination.total_pages || 1, 500);
 
   return (
     <Container maxWidth="xl" sx={{ py: 3 }}>
@@ -70,12 +86,14 @@ export default function HomeFeed({ favoritesSet, onToggleFavorite }) {
 
       {loading && <CircularProgress />}
       {!loading && errorMsg && <Alert severity="error">{errorMsg}</Alert>}
+
       {!loading && !errorMsg && results.length > 0 && (
         <>
           <ResultsGrid
             items={results}
             favoritesSet={favoritesSet}
             onToggleFavorite={onToggleFavorite}
+            onCardClick={onCardClick}
           />
 
           <Stack
@@ -87,14 +105,13 @@ export default function HomeFeed({ favoritesSet, onToggleFavorite }) {
           >
             <Typography variant="body2" color="text.secondary">
               Resultados: <b>{pagination.total_results}</b> • Página{" "}
-              <b>{pagination.page}</b> de{" "}
-              <b>{Math.min(pagination.total_pages, 500)}</b>
+              <b>{pagination.page}</b> de <b>{totalPages}</b>
             </Typography>
 
             <Pagination
               color="primary"
               page={pagination.page}
-              count={Math.min(pagination.total_pages, 500)}
+              count={totalPages}
               onChange={(_, p) => setPage(p)}
               siblingCount={1}
               boundaryCount={1}

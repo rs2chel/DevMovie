@@ -1,6 +1,6 @@
 // src/components/Requisicao.jsx
 import { useEffect, useMemo, useState } from "react";
-import tmdb from "../api/tmdb"; // ajuste o caminho se seu client estiver em outro lugar
+import tmdb from "../api/tmdb";
 
 const defaultPoster = "https://via.placeholder.com/500x750?text=Sem+Imagem";
 
@@ -50,7 +50,7 @@ export default function Requisicao({ searchTerm, children }) {
     useEffect(() => {
         if (!canQuery) return;
 
-        // Segurança: avisa se o token não está configurado
+
         if (!import.meta.env.VITE_TMDB_TOKEN) {
             setErrorMsg("Faltando VITE_TMDB_TOKEN no .env");
             return;

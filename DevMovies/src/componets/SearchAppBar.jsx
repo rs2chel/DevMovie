@@ -1,4 +1,3 @@
-// src/components/SearchAppBar.jsx
 import {
   AppBar,
   Toolbar,
@@ -6,18 +5,22 @@ import {
   InputBase,
   alpha,
   Box,
+  IconButton,
+  Badge,
+  Tooltip,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import { styled } from "@mui/material/styles";
+import { Link } from "react-router-dom";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius * 2,
   backgroundColor: alpha(theme.palette.common.white, 0.08),
   "&:hover": { backgroundColor: alpha(theme.palette.common.white, 0.14) },
-  marginLeft: 0,
   width: "100%",
-  [theme.breakpoints.up("sm")]: { marginLeft: theme.spacing(1), width: "auto" },
 }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
@@ -37,24 +40,29 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     padding: theme.spacing(1.2, 1.2, 1.2, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: { width: "40ch" },
   },
 }));
 
-export default function SearchAppBar({ value, onChange, onSubmit }) {
+export default function SearchAppBar({
+  value,
+  onChange,
+  onSubmit,
+  favoritesCount = 0,
+}) {
   return (
     <AppBar position="sticky" color="default" elevation={1}>
-      <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 700 }}>
+      <Toolbar sx={{ gap: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, mr: 1 }}>
           DevMovies
         </Typography>
+
         <Box
           component="form"
           onSubmit={(e) => {
             e.preventDefault();
             onSubmit?.();
           }}
+          sx={{ flex: 1, maxWidth: 720 }}
         >
           <Search>
             <SearchIconWrapper>
@@ -68,6 +76,20 @@ export default function SearchAppBar({ value, onChange, onSubmit }) {
             />
           </Search>
         </Box>
+
+        <Tooltip title="Início">
+          <IconButton component={Link} to="/" edge="end">
+            <HomeRoundedIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title="Favoritos">
+          <IconButton component={Link} to="/favorites" edge="end">
+            <Badge color="error" badgeContent={favoritesCount}>
+              <FavoriteBorderIcon />
+            </Badge>
+          </IconButton>
+        </Tooltip>
       </Toolbar>
     </AppBar>
   );

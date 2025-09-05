@@ -1,4 +1,3 @@
-// 4 cards por linha (md+) + botão de favorito
 import {
   Box,
   Card,
@@ -19,9 +18,9 @@ const defaultPoster = "https://via.placeholder.com/500x750?text=Sem+Imagem";
 
 export default function ResultsGrid({
   items = [],
-  favoritesSet = new Set(), // Set com chaves "type:id"
-  onToggleFavorite, // function(item)
-  onCardClick, // optional
+  favoritesSet = new Set(), // Set de "type:id"
+  onToggleFavorite, // (item) => void
+  onCardClick, // (item) => void
 }) {
   return (
     <Box
@@ -31,7 +30,7 @@ export default function ResultsGrid({
         gridTemplateColumns: {
           xs: "repeat(1, 1fr)",
           sm: "repeat(2, 1fr)",
-          md: "repeat(4, 1fr)", // <- 4 por linha
+          md: "repeat(4, 1fr)", // 4 por linha
         },
       }}
     >
@@ -53,7 +52,7 @@ export default function ResultsGrid({
               position: "relative",
             }}
           >
-            {/* Botão de favorito (canto superior direito) */}
+            {/* Favoritar */}
             <IconButton
               aria-label={
                 isFav ? "Remover dos favoritos" : "Adicionar aos favoritos"
@@ -122,7 +121,7 @@ export default function ResultsGrid({
                     WebkitLineClamp: 3,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
-                    minHeight: 64, // segura o tamanho
+                    minHeight: 64,
                   }}
                 >
                   {item.overview || "Sinopse não disponível."}
