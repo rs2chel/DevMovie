@@ -61,8 +61,9 @@ Inicie a aplicação:
 npm start
 # ou
 yarn start
+```
 Acesse no navegador:
- ```
+ 
 
 http://localhost:3000
 📝 Observações
